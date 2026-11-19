@@ -2723,7 +2723,12 @@ window.STK_IMG={courier:{src:'data:image/webp;base64,UklGRrYYAABXRUJQVlA4WAoAAAA
     /* «Партнёр» мельче и ниже, под стикерами — помещается рядом с ними (решение Алексея 19.11) */
     '.ch-front .ch-brand{font-size:9px;letter-spacing:.26em;bottom:7px}.ch-front .ch-brand i{width:4px;height:4px;margin-right:6px}',
     '/* значок в карточке калькулятора — тот же стикер, маленький */',
-    '.cx-ic.img{background:none!important;border:0!important;width:auto;height:44px}.cx-ic.img img{height:100%;width:auto;display:block;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}',
+    '.cx-ic.img{position:relative;background:none!important;border:0!important;width:auto;height:44px}',
+    // вмятина по форме стикера: видна, пока стикер на картхолдере
+    '.cx-dent{position:absolute;inset:0;opacity:0;pointer-events:none;filter:drop-shadow(0 1px 0 rgba(255,255,255,.3)) drop-shadow(0 -1px 0 rgba(0,0,0,.7))}',
+    '.cx-dent i{position:absolute;inset:0;-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat;',
+    '  background:linear-gradient(180deg,rgba(0,0,0,.6),rgba(255,255,255,.05) 50%,rgba(255,255,255,.13))}',
+    '.cx-ic.img img{height:100%;width:auto;display:block;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}',
     '.ch-dot{position:fixed;left:0;top:0;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;z-index:61;pointer-events:none}',
     '.ch-pop{position:fixed;left:0;top:0;z-index:62;pointer-events:none;font:800 13px Manrope,sans-serif;padding:4px 10px;border-radius:10px;background:#161619;white-space:nowrap;transform:translate(-50%,-50%)}',
     '.ch-ring{position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;border:2px solid currentColor;opacity:0}'
@@ -2748,6 +2753,8 @@ window.STK_IMG={courier:{src:'data:image/webp;base64,UklGRrYYAABXRUJQVlA4WAoAAAA
     if (!ic || !d) return;
     ic.classList.add('img'); ic.textContent = '';
     var im = new Image(); im.src = d.img.src; im.alt = ''; ic.appendChild(im);
+    var dn = document.createElement('span'); dn.className = 'cx-dent'; dn.style.setProperty('--m', 'url(' + d.img.src + ')');
+    dn.appendChild(document.createElement('i')); ic.appendChild(dn);
   });
   function center(el) { var r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width }; }
   function visible() { var r = ch.getBoundingClientRect(); return r.bottom > 60 && r.top < innerHeight - 60; }
@@ -2867,7 +2874,9 @@ window.STK_IMG={courier:{src:'data:image/webp;base64,UklGRrYYAABXRUJQVlA4WAoAAAA
   // значок в карточке «переехал» на картхолдер: на своём месте его нет, пока стикер не вернётся
   function icon(s, show, delay) {
     var ic = s.card.querySelector('.cx-ic img') || s.card.querySelector('.cx-ic');
-    if (REDUCE) { ic.style.opacity = show ? '' : 0; return; }
+    var dn = s.card.querySelector('.cx-dent');
+    if (REDUCE) { ic.style.opacity = show ? '' : 0; if (dn) dn.style.opacity = show ? 0 : 1; return; }
+    if (dn) G.to(dn, { opacity: show ? 0 : 1, duration: 0.3, delay: (delay || 0) + (show ? 0.1 : 0.05), overwrite: true });
     if (show) G.fromTo(ic, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.4, delay: delay || 0, ease: 'back.out(2.2)', overwrite: true });
     else G.to(ic, { opacity: 0, scale: 0.6, duration: 0.12, delay: delay || 0, ease: 'power2.in', overwrite: true });
   }
@@ -2912,7 +2921,12 @@ window.STK_IMG={courier:{src:'data:image/webp;base64,UklGRrYYAABXRUJQVlA4WAoAAAA
     '.mc.dark{color:#141414}',
     '.mc::before{content:"";position:absolute;left:4px;top:5px;width:8px;height:6px;border-radius:1.5px;background:linear-gradient(135deg,#f6d77a,#b98a2c)}',
     '.mc i{position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.55) 50%,transparent 65%);transform:translateX(-130%)}',
-    '.calc-checkbox-card.active .mc{filter:none;box-shadow:0 6px 14px -5px var(--c)}'
+    '.calc-checkbox-card.active .mc{filter:none;box-shadow:0 6px 14px -5px var(--c)}',
+    // вмятина на месте карты: видна, пока карта лежит в картхолдере
+    '.mc-w{position:relative;flex-shrink:0;width:38px;height:26px}.mc-w .mc{position:absolute;inset:0}',
+    '.mc-w::before{content:"";position:absolute;inset:0;border-radius:6px;background:linear-gradient(180deg,rgba(0,0,0,.45),rgba(255,255,255,.05));border:1px dashed rgba(255,255,255,.26);',
+    '  box-shadow:inset 0 3px 5px rgba(0,0,0,.85),inset 0 -1px 0 rgba(255,255,255,.07);opacity:0;transition:opacity .3s .7s}',
+    '.mc-w.empty::before{opacity:1;transition-delay:.1s}'
   ].join('\n');
   document.head.appendChild(css);
 
@@ -2929,15 +2943,17 @@ window.STK_IMG={courier:{src:'data:image/webp;base64,UklGRrYYAABXRUJQVlA4WAoAAAA
     mc.textContent = b[2];
     mc.appendChild(document.createElement('i'));
     var box = label.querySelector('.check-box-ui');
-    box.parentNode.insertBefore(mc, box.nextSibling);   // галочка, мини-карта, название
+    var w = document.createElement('span'); w.className = 'mc-w'; w.appendChild(mc);
+    box.parentNode.insertBefore(w, box.nextSibling);   // галочка, мини-карта, название
     map.set(cb, { mc: mc, on: cb.checked });
-    if (cb.checked) mc.style.opacity = 0;   // уже лежит в картхолдере
+    if (cb.checked) { mc.style.opacity = 0; w.classList.add('empty'); }   // уже лежит в картхолдере
   });
 
   function sync() {
     map.forEach(function (s, cb) {
       if (cb.checked === s.on) return;
       s.on = cb.checked;
+      s.mc.parentNode.classList.toggle('empty', s.on);
       // карта «переезжает» в картхолдер: на месте строки пропадает, а сняли галочку — возвращается, когда большая карта долетит обратно
       if (!G || matchMedia('(prefers-reduced-motion: reduce)').matches) { s.mc.style.opacity = s.on ? 0 : ''; return; }
       if (s.on) G.to(s.mc, { scale: 0.4, opacity: 0, duration: 0.18, ease: 'power2.in', overwrite: true });
