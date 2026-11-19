@@ -36,14 +36,16 @@
 #main-offers .mo-mover span{font-size:20px}
 #main-offers .mo-pop{position:absolute;top:-22px;left:0;transform:translateX(-50%);font:800 13px Manrope,sans-serif;color:#fff;background:#161619;border:1px solid #EA2845;padding:4px 9px;border-radius:9px;opacity:0;white-space:nowrap}
 #main-offers .mo-cps-wrap{margin-top:20px;padding-top:18px;border-top:1px solid rgba(41,41,46,.8)}
-#main-offers .mo-cps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;perspective:600px}
-#main-offers .mo-cp{height:46px}
-#main-offers .mo-cp-in{position:relative;width:100%;height:100%;transform-style:preserve-3d}
-#main-offers .mo-cp-f,#main-offers .mo-cp-b{position:absolute;inset:0;border-radius:10px;display:flex;align-items:center;justify-content:center;backface-visibility:hidden;-webkit-backface-visibility:hidden}
-#main-offers .mo-cp-f{background:#161619;border:1px dashed #3E3E47;font:700 12px ui-monospace,Menlo,monospace;color:#71717A}
-#main-offers .mo-cp-b{transform:rotateY(180deg);background:linear-gradient(135deg,#EA2845,#780F20);color:#fff;box-shadow:0 6px 16px -6px rgba(234,40,69,.7)}
-#main-offers .mo-cps-cnt{margin-top:10px;font:600 12px Manrope,sans-serif;color:#A1A1AA}
-#main-offers .mo-cps-cnt b{color:#F5F5F7}
+#main-offers .mo-st3{display:flex;align-items:flex-start}
+#main-offers .mo-s{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px}
+#main-offers .mo-s-ic{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:#161619;border:1px dashed #3E3E47;color:#71717A;transition:background .35s,border-color .35s,color .35s,box-shadow .35s}
+#main-offers .mo-s-ic span{font-size:26px}
+#main-offers .mo-s-t{font:600 12px/1.35 Manrope,sans-serif;color:#71717A;transition:color .35s}
+#main-offers .mo-s-t b{display:block;font:800 14px Manrope,sans-serif;color:#A1A1AA;transition:color .35s}
+#main-offers .mo-s.on .mo-s-ic{background:linear-gradient(135deg,#2ED47A,#0F7A45);border:1px solid #2ED47A;color:#fff;box-shadow:0 6px 18px -4px rgba(46,212,122,.7)}
+#main-offers .mo-s.on .mo-s-t{color:#D4D4D8}#main-offers .mo-s.on .mo-s-t b{color:#2ED47A}
+#main-offers .mo-s-ln{flex:0 0 22px;height:2px;margin-top:25px;background:#29292E;border-radius:2px;overflow:hidden}
+#main-offers .mo-s-ln i{display:block;height:100%;width:0;background:#2ED47A;box-shadow:0 0 8px rgba(46,212,122,.7)}
 @media (max-width:480px){#main-offers .mo-node b{font-size:10px}#main-offers .mo-route{margin:34px 14px 0}}
 </style><style>
 #main-offers .mo-a-route{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
@@ -65,7 +67,6 @@
 #main-offers .mo-a1 .mo-node.on i{background:#FFC83D;border-color:#FFE08A;box-shadow:0 0 14px rgba(255,200,61,.8)}
 #main-offers .mo-a1 .mo-mover{background:#FFC83D;color:#141414;box-shadow:0 6px 18px rgba(255,200,61,.5)}
 #main-offers .mo-a1 .mo-pop{border-color:#FFC83D}
-#main-offers .mo-a2 .mo-cp-b{background:linear-gradient(135deg,#2ED47A,#0F7A45);box-shadow:0 6px 16px -6px rgba(46,212,122,.7)}
 #main-offers .mo-a2 .mo-18{border-color:#EA2845}
 #main-offers .mo-a1 .mo-route-wrap,#main-offers .mo-a2 .mo-cps-wrap{position:relative}
 #main-offers .mo-a1 .mo-a-route path{opacity:.16}#main-offers .mo-a1 .mo-a-route path+path{opacity:.08}
@@ -252,7 +253,7 @@
             <h3 class="text-2xl sm:text-3xl font-extrabold text-[#F5F5F7]">Пассивный доход с&nbsp;Яндекс Курьером</h3>
             <div class="mt-4">
               <div class="text-3xl sm:text-4xl lg:text-[2.75rem] font-extrabold text-[#F5F5F7] leading-none tracking-tight">
-                2 500 ₽ <span class="text-xl sm:text-2xl text-[#FFC83D] font-semibold">раз в два месяца</span>
+                <span class="text-xl sm:text-2xl font-semibold">от</span> 2 500 ₽ <span class="text-xl sm:text-2xl text-[#FFC83D] font-semibold">раз в два месяца</span>
               </div>
             </div>
             <div class="mo-tags"><span>без вложений</span><span>с телефона</span><span>первая выплата в первую неделю</span></div>
@@ -262,7 +263,7 @@
                 <div class="mo-mover"><span class="material-symbols-outlined">delivery_dining</span></div>
                 <div class="mo-pop">+2 500 ₽</div>
               </div>
-              <p class="text-xs text-[#A1A1AA] mt-3 leading-relaxed">Порядок повышения и условия участия уточняйте в Telegram.</p>
+              <p class="text-xs text-[#A1A1AA] mt-3 leading-relaxed">Каждые 2 месяца выплата растёт на 500&nbsp;₽: от 2&nbsp;500 до 5&nbsp;000&nbsp;₽. Условия участия уточняйте в Telegram.</p>
             </div>
           </div>
           <div class="pt-8 relative z-10"><a class="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-[#FFD45C] to-[#F59E0B] text-sm font-bold text-[#141414] shadow-[0_6px_25px_rgba(255,200,61,0.3)] hover:brightness-110 transition-all text-center" href="https://t.me/Ra3Diol" rel="noopener noreferrer" target="_blank">
@@ -285,16 +286,21 @@
             <h3 class="text-2xl sm:text-3xl font-extrabold text-[#F5F5F7]">Регистрации в&nbsp;букмекерах</h3>
             <div class="mt-4">
               <div class="text-3xl sm:text-4xl lg:text-[2.75rem] font-extrabold text-[#F5F5F7] leading-none tracking-tight">До 3 000 ₽</div>
-              <p class="text-sm font-semibold text-[#2ED47A] mt-2">за 8 регистраций</p>
+              <p class="text-sm font-semibold text-[#2ED47A] mt-2">за 8 регистраций и отыгрыш фрибетов</p>
             </div>
             <div class="mo-tags"><span>без вложений</span><span>с телефона</span><span class="mo-18">18+</span></div>
             <div class="mo-cps-wrap">
-              <div class="mo-cps"><div class="mo-cp"><div class="mo-cp-in"><div class="mo-cp-f">№1</div><div class="mo-cp-b"><span class="material-symbols-outlined">check</span></div></div></div><div class="mo-cp"><div class="mo-cp-in"><div class="mo-cp-f">№2</div><div class="mo-cp-b"><span class="material-symbols-outlined">check</span></div></div></div><div class="mo-cp"><div class="mo-cp-in"><div class="mo-cp-f">№3</div><div class="mo-cp-b"><span class="material-symbols-outlined">check</span></div></div></div><div class="mo-cp"><div class="mo-cp-in"><div class="mo-cp-f">№4</div><div class="mo-cp-b"><span class="material-symbols-outlined">check</span></div></div></div><div class="mo-cp"><div class="mo-cp-in"><div class="mo-cp-f">№5</div><div class="mo-cp-b"><span class="material-symbols-outlined">check</span></div></div></div><div class="mo-cp"><div class="mo-cp-in"><div class="mo-cp-f">№6</div><div class="mo-cp-b"><span class="material-symbols-outlined">check</span></div></div></div><div class="mo-cp"><div class="mo-cp-in"><div class="mo-cp-f">№7</div><div class="mo-cp-b"><span class="material-symbols-outlined">check</span></div></div></div><div class="mo-cp"><div class="mo-cp-in"><div class="mo-cp-f">№8</div><div class="mo-cp-b"><span class="material-symbols-outlined">check</span></div></div></div></div>
-              <div class="mo-cps-cnt">Готово: <b id="mo-cnt">0</b> из 8</div>
+              <div class="mo-st3">
+                <div class="mo-s"><div class="mo-s-ic"><span class="material-symbols-outlined">app_registration</span></div><div class="mo-s-t"><b>Вы</b>регистрируетесь</div></div>
+                <div class="mo-s-ln"><i></i></div>
+                <div class="mo-s"><div class="mo-s-ic"><span class="material-symbols-outlined">autorenew</span></div><div class="mo-s-t"><b>Мы</b>отыгрываем фрибеты</div></div>
+                <div class="mo-s-ln"><i></i></div>
+                <div class="mo-s"><div class="mo-s-ic"><span class="material-symbols-outlined">payments</span></div><div class="mo-s-t"><b>Вам</b>до 3&nbsp;000&nbsp;₽</div></div>
+              </div>
             </div>
             <div class="mt-4 p-3.5 rounded-xl bg-[#161619] border border-[#29292E] text-xs text-[#F5F5F7] flex items-center gap-2">
               <span class="w-2 h-2 rounded-full bg-[#2ED47A]"></span>
-              <span>Выплата сразу по факту выполнения условий</span>
+              <span>От вас только регистрация, дальше всё сделаем мы. Выплата сразу после того, как мы отыграем фрибеты</span>
             </div>
           </div>
           <div class="pt-8 relative z-10"><a class="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-[#161619] border border-[#29292E] text-sm font-semibold text-[#F5F5F7] border-[#2ED47A]/50 hover:border-[#2ED47A] hover:bg-[#2ED47A]/10 transition-all text-center" href="https://t.me/Ra3Diol" rel="noopener noreferrer" target="_blank">
@@ -1143,7 +1149,7 @@
                   <div class="p-3.5 rounded-2xl bg-[#161619] border border-[#29292E] flex items-center gap-3">
                     <span class="material-symbols-outlined text-[#EA2845] text-base flex-shrink-0">info</span>
                     <p class="text-xs text-[#A1A1AA] leading-relaxed">
-                      Пассивный доход (2 500 ₽/2 мес) и регистрации (до 3 000 ₽) не входят в разовый банковский расчёт и обсуждаются отдельно.
+                      Пассивный доход (от 2 500 ₽ раз в 2 мес.) и регистрации (до 3 000 ₽) не входят в разовый банковский расчёт и обсуждаются отдельно.
                     </p>
                   </div>
 
@@ -1359,7 +1365,7 @@
           </button>
           <div class="faq-content px-6 pb-5 pt-0 hidden">
             <p class="text-sm text-[#A1A1AA] leading-relaxed ">
-              Это проверенные онлайн-сервисы и площадки. За прохождение 8 регистраций можно получить до 3 000 ₽. Ссылки и пошаговый порядок действий предоставляются лично в диалоге.
+              Это проверенные онлайн-сервисы и площадки. За 8 регистраций и отыгрыш фрибетов можно получить до 3 000 ₽. От вас требуется только регистрация, дальше всё сделаем мы. Выплата сразу после того, как мы отыграем фрибеты. Ссылки и пошаговый порядок действий предоставляются лично в диалоге.
             </p>
           </div>
         </div>
@@ -2581,8 +2587,8 @@
   var R=document.querySelector('#main-offers .mo-route'); if(!R) return;
   var nodes=[].slice.call(R.querySelectorAll('.mo-node')), mover=R.querySelector('.mo-mover'), fill=R.querySelector('.mo-fill'), pop=R.querySelector('.mo-pop');
   var steps=nodes.map(function(n){return n.querySelector('b').textContent;});
-  var cps=[].slice.call(document.querySelectorAll('#main-offers .mo-cp-in')), cnt=document.getElementById('mo-cnt');
-  if(red){ nodes.forEach(function(n){n.classList.add('on')}); G.set(mover,{left:'100%'}); G.set(fill,{width:'100%'}); cps.forEach(function(c){G.set(c,{rotateY:180})}); cnt.textContent=8; return; }
+  var sts=[].slice.call(document.querySelectorAll('#main-offers .mo-s')), lns=[].slice.call(document.querySelectorAll('#main-offers .mo-s-ln i'));
+  if(red){ nodes.forEach(function(n){n.classList.add('on')}); G.set(mover,{left:'100%'}); G.set(fill,{width:'100%'}); sts.forEach(function(e){e.classList.add('on')}); G.set(lns,{width:'100%'}); return; }
   // маршрут: курьер едет от ступени к ступени, на каждой «падает» выплата
   var t1=G.timeline({repeat:-1,repeatDelay:.8,paused:true});
   t1.add(function(){nodes.forEach(function(n){n.classList.remove('on')});}).set(mover,{left:'0%'}).set(fill,{width:'0%'});
@@ -2595,13 +2601,15 @@
       .to(pop,{opacity:0,y:-18,duration:.3,delay:.35});
   });
   t1.to({}, {duration:1.2}).to(mover,{opacity:0,duration:.25}).set(mover,{left:'0%'}).to(mover,{opacity:1,duration:.25});
-  // купоны: переворачиваются по одному, счётчик растёт
-  var t2=G.timeline({repeat:-1,repeatDelay:1.4,paused:true});
-  t2.set(cps,{rotateY:0});
-  cps.forEach(function(c,i){ t2.to(c,{rotateY:180,duration:.5,ease:'back.out(1.6)'}, i?'>-0.22':'>'); });
-  t2.eventCallback('onUpdate',function(){ cnt.textContent=cps.filter(function(c){return Math.abs(G.getProperty(c,'rotateY'))>90;}).length; });
-  t2.fromTo('#main-offers .mo-cps',{scale:1},{scale:1.03,duration:.18,yoyo:true,repeat:1}).to({}, {duration:1.4}).to(cps,{rotateY:0,duration:.4,stagger:.03,ease:'power2.in'});
-  [[R,t1],[document.querySelector('#main-offers .mo-cps'),t2]].forEach(function(p){
+  // три шага: вы → мы → выплата, подсветка бежит по очереди
+  var t2=G.timeline({repeat:-1,repeatDelay:.6,paused:true});
+  t2.add(function(){sts.forEach(function(e){e.classList.remove('on')});}).set(lns,{width:'0%'});
+  sts.forEach(function(e,i){
+    if(i) t2.to(lns[i-1],{width:'100%',duration:.7,ease:'power2.inOut'});
+    t2.add(function(){e.classList.add('on')}).fromTo(e.querySelector('.mo-s-ic'),{scale:1},{scale:1.15,duration:.15,yoyo:true,repeat:1,ease:'power1.out'}).to({}, {duration:.5});
+  });
+  t2.to({}, {duration:1.6});
+  [[R,t1],[document.querySelector('#main-offers .mo-st3'),t2]].forEach(function(p){
     if(window.ScrollTrigger) ScrollTrigger.create({trigger:p[0],start:'top 90%',end:'bottom 10%',onToggle:function(s){s.isActive?p[1].play():p[1].pause();}});
     else p[1].play();
   });
