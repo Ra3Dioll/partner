@@ -2706,7 +2706,7 @@ window.STK_IMG={courier:{src:'data:image/webp;base64,UklGRrYYAABXRUJQVlA4WAoAAAA
     courier: { img: IMG.courier, h: 66, side: 'left', rot: -8, col: '#FFC83D', pop: 'от 2 500 ₽' },
     bk:      { img: IMG.bk,      h: 52, side: 'right', rot: 7, col: '#2ED47A', pop: '+3 000 ₽' }
   };
-  Object.keys(KIND).forEach(function (k) { var d = KIND[k]; d.w = Math.round(d.img.w * d.h / d.img.h); });
+  Object.keys(KIND).forEach(function (k) { var d = KIND[k]; d.hh = d.h; d.w = Math.round(d.img.w * d.h / d.img.h); });
   var SH_LO = 'drop-shadow(0px 2px 2px rgba(0,0,0,0.6))', SH_HI = 'drop-shadow(0px 18px 12px rgba(0,0,0,0.55))';
 
 
@@ -2719,7 +2719,8 @@ window.STK_IMG={courier:{src:'data:image/webp;base64,UklGRrYYAABXRUJQVlA4WAoAAAA
     '.ch-stk-sh i{position:absolute;top:-20%;bottom:-20%;left:-60%;width:60%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.8),transparent);transform:translateX(0)}',
     '.ch-stk.fly{position:fixed;left:0;top:0;margin:0!important;z-index:61}',
     '/* на узком картхолдере надпись «Партнёр» уступает место стикерам */',
-    '.ch-brand{transition:opacity .35s}.ch-front.has-stk .ch-brand{opacity:0}',
+    /* «Партнёр» мельче и ниже, под стикерами — помещается рядом с ними (решение Алексея 19.11) */
+    '.ch-front .ch-brand{font-size:9px;letter-spacing:.26em;bottom:7px}.ch-front .ch-brand i{width:4px;height:4px;margin-right:6px}',
     '/* значок в карточке калькулятора — тот же стикер, маленький */',
     '.cx-ic.img{background:none!important;border:0!important;width:auto;height:44px}.cx-ic.img img{height:100%;width:auto;display:block;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}',
     '.ch-dot{position:fixed;left:0;top:0;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;z-index:61;pointer-events:none}',
@@ -2733,7 +2734,7 @@ window.STK_IMG={courier:{src:'data:image/webp;base64,UklGRrYYAABXRUJQVlA4WAoAAAA
   function makeSticker(k) {
     var d = KIND[k], el = document.createElement('div');
     el.className = 'ch-stk ' + (d.side === 'left' ? 'l' : 'r');
-    el.style.width = d.w + 'px'; el.style.height = d.h + 'px'; el.style.marginTop = -Math.round(d.h / 2) - 2 + 'px';
+    el.style.width = d.w + 'px'; el.style.height = d.hh + 'px'; el.style.marginTop = -Math.round(d.hh / 2) - 4 + 'px';
     var img = new Image(); img.src = d.img.src; img.alt = ''; img.draggable = false; el.appendChild(img);
     var sh = document.createElement('div'); sh.className = 'ch-stk-sh';
     sh.style.webkitMaskImage = sh.style.maskImage = 'url(' + d.img.src + ')';
@@ -2822,17 +2823,27 @@ window.STK_IMG={courier:{src:'data:image/webp;base64,UklGRrYYAABXRUJQVlA4WAoAAAA
     var el = s.el; if (!el) return;
     s.el = null;
     if (REDUCE || !visible()) { el.remove(); return; }
-    var c = center(el), to = center(s.card.querySelector('.cx-ic'));
-    el.style.visibility = '';
-    // отклеиваем: край задирается (наклон), стикер приподнимается
+    G.killTweensOf(el);
+    var ic = s.card.querySelector('.cx-ic'), c = center(el), to = center(ic);
+    var dir = d.side === 'left' ? -1 : 1, k2 = (ic.offsetHeight || 44) / d.hh;   // в карточке стикер меньше
+    // сразу переносим в верхний слой ровно туда, где он был, — без скачка
+    G.set(el, { clearProps: 'transform' });
+    layer.appendChild(el); el.classList.add('fly'); el.style.visibility = '';
+    G.set(el, { xPercent: -50, yPercent: -50, x: c.x, y: c.y, rotation: d.rot, scale: 1, transformOrigin: '50% 50%' });
+    var p = { t: 0 }, sy = c.y - 14, peak = Math.min(sy, to.y) - 110;
     G.timeline({ onComplete: function () { el.remove(); } })
-      .to(el, { rotationX: 55, rotation: d.rot + (d.side === 'left' ? 20 : -20), y: -10, scale: 1.12, transformPerspective: 300, transformOrigin: d.side === 'left' ? '0% 100%' : '100% 100%', duration: 0.22, ease: 'power2.out' })
-      .add(function () {
-        layer.appendChild(el); el.classList.add('fly');
-        G.set(el, { xPercent: -50, yPercent: -50, x: c.x, y: c.y - 10, transformOrigin: '50% 50%' });
-      })
-      .to(el, { x: to.x, y: to.y, scale: 0.7, rotation: 0, rotationX: 0, opacity: 0, duration: 0.5, ease: 'power2.in' });
-    G.fromTo(s.card.querySelector('.cx-ic'), { scale: 1 }, { scale: 1.15, duration: 0.15, yoyo: true, repeat: 1, delay: 0.62, ease: 'power1.out' });
+      // отклеивается: край приподнимается, стикер отрывается от стенки, тень растёт
+      .to(el, { rotation: d.rot + dir * 14, y: sy, scale: 1.1, filter: SH_HI, duration: 0.2, ease: 'power2.out' })
+      // летит обратно в карточку по дуге, поворачиваясь ровно
+      .to(p, { t: 1, duration: 0.6, ease: 'power2.inOut', onUpdate: function () {
+        var t = p.t, u = 1 - t, tc = center(ic);
+        G.set(el, { x: u * u * c.x + 2 * u * t * ((c.x + tc.x) / 2) + t * t * tc.x, y: u * u * sy + 2 * u * t * peak + t * t * tc.y });
+      } }, 0.2)
+      .to(el, { rotation: 0, scale: k2, duration: 0.6, ease: 'power2.inOut' }, 0.2)
+      .to(el, { filter: SH_LO, duration: 0.2, ease: 'power1.in' }, 0.6)
+      // встал на место значка в карточке
+      .to(el, { opacity: 0, duration: 0.12 }, 0.8);
+    G.fromTo(ic, { scale: 1 }, { keyframes: [{ scale: 0.86, duration: 0.08 }, { scale: 1.08, duration: 0.14 }, { scale: 1, duration: 0.25, ease: 'elastic.out(1,0.5)' }], delay: 0.78 });
   }
 
   // телефон: картхолдер ниже списка — стикер «ждёт» и приклеивается, когда картхолдер покажется
@@ -2852,7 +2863,6 @@ window.STK_IMG={courier:{src:'data:image/webp;base64,UklGRrYYAABXRUJQVlA4WAoAAAA
       { y: 0, scale: 1.18, rotation: d.rot, opacity: 1, filter: SH_LO, duration: 0.45, ease: 'power2.in', delay: delay, onComplete: function () { slap(s, k); } });
   }
 
-  function brand() { front.classList.toggle('has-stk', ch.offsetWidth < 330 && Object.keys(state).some(function (k) { return state[k].on; })); }
   function sync(fromUser) {
     Object.keys(state).forEach(function (k) {
       var s = state[k], on = s.input.checked;
@@ -2865,7 +2875,6 @@ window.STK_IMG={courier:{src:'data:image/webp;base64,UklGRrYYAABXRUJQVlA4WAoAAAA
         else { s.pending = true; if (fromUser) G.fromTo(s.card.querySelector('.cx-ic'), { y: 0 }, { y: 8, duration: 0.15, yoyo: true, repeat: 1 }); }
       } else { s.pending = false; peel(k); }
     });
-    brand();
   }
 
   var prev = window.updateCalc;
